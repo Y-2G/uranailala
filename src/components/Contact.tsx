@@ -20,11 +20,7 @@ const contactSchema = yup.object({
     .string()
     .trim()
     .email('メールアドレスの形式が正しくありません。')
-    .when('replyMethod', {
-      is: (value: ContactFormValues['replyMethod']) => value !== 'phone',
-      then: (schema) => schema.required('メールアドレスを入力してください。'),
-      otherwise: (schema) => schema.notRequired(),
-    }),
+    .required('メールアドレスを入力してください。'),
   phone: yup
     .string()
     .trim()
@@ -82,14 +78,21 @@ export function Contact() {
     },
   ];
 
-  const handleSubmitForm = () => {
-    // Simulate form submission
-    setIsSubmitted(true);
+  const handleSubmitForm = async (data: ContactFormValues) => {
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
-    // Reset form after showing success message
-    setTimeout(() => {
-      reset();
-    }, 1000);
+    if (!response.ok) {
+      return;
+    }
+
+    setIsSubmitted(true);
+    reset();
   };
 
   useEffect(() => {
@@ -149,15 +152,13 @@ export function Contact() {
                 <div>
                   <label htmlFor="email" className={styles.contactFieldLabel}>
                     メールアドレス{" "}
-                    {replyMethod !== 'phone' && (
-                      <span className={styles.contactRequired}>*</span>
-                    )}
+                    <span className={styles.contactRequired}>*</span>
                   </label>
                   <input
                     type="email"
                     id="email"
                     name="email"
-                    required={replyMethod !== 'phone'}
+                    required
                     className={styles.contactInput}
                     placeholder="example@email.com"
                     aria-invalid={Boolean(errors.email)}
@@ -259,9 +260,11 @@ export function Contact() {
                   送信する
                 </button>
 
-                <p className={styles.contactNote}>
-                  お送りいただいた情報は、お問い合わせ対応のみに使用いたします。
-                </p>
+                <ul className={styles.contactNoteList}>
+                  <li>お送りいただいた情報は、お問い合わせ対応のみに使用いたします。</li>
+                  <li>フォームにご入力いただいたメールアドレスへ担当者よりご連絡いたします。</li>
+                  <li>3日以内に返信がない場合は、お手数ですが再度フォームからお問い合わせください。</li>
+                </ul>
               </form>
             ) : (
               <div className={styles.contactSuccess}>

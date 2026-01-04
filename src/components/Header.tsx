@@ -108,29 +108,31 @@ export function Header() {
       </div>
 
       {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className={styles.headerMobileMenu}>
-          <nav className={styles.headerMobileNav}>
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={(e) => scrollToSection(e, item.href)}
-                className={styles.headerMobileLink}
-              >
-                {item.label}
-              </a>
-            ))}
+      <div
+        className={`${styles.headerMobileMenu} ${
+          isMobileMenuOpen ? styles.headerMobileMenuOpen : ""
+        }`}
+      >
+        <nav className={styles.headerMobileNav}>
+          {navItems.map((item) => (
             <a
-              href="#contact"
-              onClick={(e) => scrollToSection(e, "#contact")}
-              className={styles.headerMobileCta}
+              key={item.href}
+              href={item.href}
+              onClick={(e) => scrollToSection(e, item.href)}
+              className={styles.headerMobileLink}
             >
-              鑑定を依頼する
+              {item.label}
             </a>
-          </nav>
-        </div>
-      )}
+          ))}
+          <a
+            href="#contact"
+            onClick={(e) => scrollToSection(e, "#contact")}
+            className={styles.headerMobileCta}
+          >
+            鑑定を依頼する
+          </a>
+        </nav>
+      </div>
     </header>
   );
 }
