@@ -101,7 +101,14 @@ export function Pricing() {
 
               <a
                 href="#contact"
-                onClick={(e) => scrollToSection(e, "#contact")}
+                onClick={(e) => {
+                  if (typeof window !== "undefined") {
+                    window.dispatchEvent(
+                      new CustomEvent("select-plan", { detail: plan.name })
+                    );
+                  }
+                  scrollToSection(e, "#contact");
+                }}
                 className={`${styles.pricingCta} ${
                   plan.recommended
                     ? styles.pricingCtaRecommended

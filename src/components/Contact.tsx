@@ -1,17 +1,71 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Send, ChevronDown, CheckCircle } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import styles from "./styles.module.scss";
 
+type ContactFormValues = {
+  name: string;
+  email: string;
+  phone: string;
+  plan: string;
+  message: string;
+  replyMethod: 'email' | 'phone' | 'either';
+};
+
+const contactSchema = yup.object({
+  name: yup.string().trim().required('お名前を入力してください。'),
+  email: yup
+    .string()
+    .trim()
+    .email('メールアドレスの形式が正しくありません。')
+    .when('replyMethod', {
+      is: (value: ContactFormValues['replyMethod']) => value !== 'phone',
+      then: (schema) => schema.required('メールアドレスを入力してください。'),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+  phone: yup
+    .string()
+    .trim()
+    .when('replyMethod', {
+      is: (value: ContactFormValues['replyMethod']) => value === 'phone',
+      then: (schema) => schema.required('電話番号を入力してください。'),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+  plan: yup.string().trim().optional(),
+  message: yup.string().trim().required('お問い合わせ内容を入力してください。'),
+  replyMethod: yup
+    .mixed<ContactFormValues['replyMethod']>()
+    .oneOf(['email', 'phone', 'either'])
+    .required(),
+});
+
 export function Contact() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: '',
-    replyMethod: 'email',
-  });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm<ContactFormValues>({
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      plan: '',
+      message: '',
+      replyMethod: 'email',
+    },
+    resolver: yupResolver(contactSchema),
+    mode: 'onSubmit',
+  });
+
+  const replyMethod = watch('replyMethod');
 
   const faqs = [
     {
@@ -28,29 +82,30 @@ export function Contact() {
     },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitForm = () => {
     // Simulate form submission
     setIsSubmitted(true);
-    
+
     // Reset form after showing success message
     setTimeout(() => {
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        message: '',
-        replyMethod: 'email',
-      });
+      reset();
     }, 1000);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  useEffect(() => {
+    const handlePlanSelect = (event: Event) => {
+      const detail = (event as CustomEvent<string>).detail;
+      if (!detail) {
+        return;
+      }
+      setValue('plan', detail, { shouldDirty: true, shouldTouch: true });
+    };
+
+    window.addEventListener("select-plan", handlePlanSelect as EventListener);
+    return () => {
+      window.removeEventListener("select-plan", handlePlanSelect as EventListener);
+    };
+  }, []);
 
   return (
     <section id="contact" className={styles.contactSection}>
@@ -69,7 +124,7 @@ export function Contact() {
           {/* Contact Form */}
           <div className={styles.contactFormColumn}>
             {!isSubmitted ? (
-              <form onSubmit={handleSubmit} className={styles.contactForm}>
+              <form onSubmit={handleSubmit(handleSubmitForm)} className={styles.contactForm}>
                 {/* Name */}
                 <div>
                   <label htmlFor="name" className={styles.contactFieldLabel}>
@@ -80,45 +135,81 @@ export function Contact() {
                     id="name"
                     name="name"
                     required
-                    value={formData.name}
-                    onChange={handleChange}
                     className={styles.contactInput}
                     placeholder="山田 太郎"
+                    aria-invalid={Boolean(errors.name)}
+                    {...register('name')}
                   />
+                  {errors.name && (
+                    <p className={styles.contactError}>{errors.name.message}</p>
+                  )}
                 </div>
 
                 {/* Email */}
                 <div>
                   <label htmlFor="email" className={styles.contactFieldLabel}>
-                    メールアドレス <span className={styles.contactRequired}>*</span>
+                    メールアドレス{" "}
+                    {replyMethod !== 'phone' && (
+                      <span className={styles.contactRequired}>*</span>
+                    )}
                   </label>
                   <input
                     type="email"
                     id="email"
                     name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
+                    required={replyMethod !== 'phone'}
                     className={styles.contactInput}
                     placeholder="example@email.com"
+                    aria-invalid={Boolean(errors.email)}
+                    {...register('email')}
                   />
+                  {errors.email && (
+                    <p className={styles.contactError}>{errors.email.message}</p>
+                  )}
                 </div>
 
                 {/* Phone */}
                 <div>
                   <label htmlFor="phone" className={styles.contactFieldLabel}>
                     電話番号{" "}
-                    <span className={styles.contactOptional}>(任意)</span>
+                    {replyMethod === 'phone' ? (
+                      <span className={styles.contactRequired}>*</span>
+                    ) : (
+                      <span className={styles.contactOptional}>(任意)</span>
+                    )}
                   </label>
                   <input
                     type="tel"
                     id="phone"
                     name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
+                    required={replyMethod === 'phone'}
                     className={styles.contactInput}
                     placeholder="090-1234-5678"
+                    aria-invalid={Boolean(errors.phone)}
+                    {...register('phone')}
                   />
+                  {errors.phone && (
+                    <p className={styles.contactError}>{errors.phone.message}</p>
+                  )}
+                </div>
+
+                {/* Plan */}
+                <div>
+                  <label htmlFor="plan" className={styles.contactFieldLabel}>
+                    ご希望プラン{" "}
+                    <span className={styles.contactOptional}>(任意)</span>
+                  </label>
+                  <select
+                    id="plan"
+                    name="plan"
+                    className={`${styles.contactInput} ${styles.contactSelect}`}
+                    {...register('plan')}
+                  >
+                    <option value="">鑑定時に相談</option>
+                    <option value="ライト">ライト（30分）</option>
+                    <option value="スタンダード">スタンダード（60分）</option>
+                    <option value="じっくり">じっくり（90分）</option>
+                  </select>
                 </div>
 
                 {/* Reply Method */}
@@ -129,9 +220,8 @@ export function Contact() {
                   <select
                     id="replyMethod"
                     name="replyMethod"
-                    value={formData.replyMethod}
-                    onChange={handleChange}
-                    className={styles.contactInput}
+                    className={`${styles.contactInput} ${styles.contactSelect}`}
+                    {...register('replyMethod')}
                   >
                     <option value="email">メール</option>
                     <option value="phone">電話</option>
@@ -149,12 +239,15 @@ export function Contact() {
                     id="message"
                     name="message"
                     required
-                    value={formData.message}
-                    onChange={handleChange}
                     rows={6}
                     className={`${styles.contactInput} ${styles.contactTextarea}`}
                     placeholder="ご希望の鑑定プラン、日時、ご相談内容などをお書きください。"
+                    aria-invalid={Boolean(errors.message)}
+                    {...register('message')}
                   />
+                  {errors.message && (
+                    <p className={styles.contactError}>{errors.message.message}</p>
+                  )}
                 </div>
 
                 {/* Submit Button */}
