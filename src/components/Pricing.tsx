@@ -58,9 +58,7 @@ export function Pricing() {
       <div className={styles.pricingContainer}>
         {/* Section Title */}
         <div className={styles.pricingHeader}>
-          <h2 className={styles.pricingTitle}>
-            Pricing
-          </h2>
+          <h2 className={styles.pricingTitle}>料金</h2>
           <p className={styles.pricingDescription}>
             ご予算やお時間に合わせてお選びいただけます。
             <br className={styles.pricingBreakMdOnly} />

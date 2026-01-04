@@ -21,11 +21,7 @@ export function Hero() {
       <div className={styles.background}>
         <picture>
           <source media="(min-width: 768px)" srcSet="/hero-pc.jpg" />
-          <img
-            src="/hero.jpeg"
-            alt=""
-            className={styles.backgroundImage}
-          />
+          <img src="/hero.jpeg" alt="" className={styles.backgroundImage} />
         </picture>
         <div className={styles.overlay}></div>
       </div>
@@ -35,17 +31,17 @@ export function Hero() {
           {/* Main Heading */}
           <h1 className={styles.heading}>
             毎日を楽しく過ごすための
-            <br className={styles.breakLgHidden} />
+            <br />
             小さなエッセンス
           </h1>
 
           {/* Subheading */}
           <p className={styles.subheading}>
-            占いを通して、あなた自身が答えに辿り着けるよう、
+            毎日を楽しく過ごせるように
             <br className={styles.breakLgOnly} />
-            そっとヒントをお渡しします。
+            占いを通して小さなエッセンスをお渡しします。
             <br className={styles.breakMdHiddenLgInline} />
-            迷いを整理し、前を向いて歩むためのサポートをいたします。
+            迷いを整理し、前を向いて歩むためのサポートをいたします
           </p>
 
           {/* CTA Buttons */}

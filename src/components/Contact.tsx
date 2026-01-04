@@ -57,9 +57,7 @@ export function Contact() {
       <div className={styles.contactContainer}>
         {/* Section Title */}
         <div className={styles.contactHeader}>
-          <h2 className={styles.contactTitle}>
-            Contact
-          </h2>
+          <h2 className={styles.contactTitle}>お問い合わせ</h2>
           <p className={styles.contactDescription}>
             鑑定のご依頼やご質問など、お気軽にお問い合わせください。
             <br className={styles.contactBreakMdOnly} />

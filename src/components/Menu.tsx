@@ -55,9 +55,7 @@ export function Menu() {
       <div className={styles.menuContainer}>
         {/* Section Title */}
         <div className={styles.menuHeader}>
-          <h2 className={styles.menuTitle}>
-            Menu
-          </h2>
+          <h2 className={styles.menuTitle}>メニュー</h2>
           <p className={styles.menuDescription}>
             お悩みや知りたい内容に合わせて、最適な占術をご提案いたします。
             <br className={styles.menuBreakMdOnly} />

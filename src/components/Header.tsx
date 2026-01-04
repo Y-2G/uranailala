@@ -15,10 +15,10 @@ export function Header() {
   }, []);
 
   const navItems = [
-    { label: "Menu", href: "#menu" },
-    { label: "Pricing", href: "#pricing" },
-    { label: "Updates", href: "#updates" },
-    { label: "Contact", href: "#contact" },
+    { label: "メニュー", href: "#menu" },
+    { label: "料金", href: "#pricing" },
+    { label: "お知らせ", href: "#updates" },
+    { label: "お問い合わせ", href: "#contact" },
   ];
 
   const scrollToSection = (

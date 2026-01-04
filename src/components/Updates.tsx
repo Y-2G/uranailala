@@ -56,9 +56,7 @@ export function Updates() {
       <div className={styles.updatesContainer}>
         {/* Section Title */}
         <div className={styles.updatesHeader}>
-          <h2 className={styles.updatesTitle}>
-            Updates
-          </h2>
+          <h2 className={styles.updatesTitle}>お知らせ</h2>
           <p className={styles.updatesDescription}>
             最新の鑑定日程やお知らせは、Instagramで随時更新しています。
           </p>
