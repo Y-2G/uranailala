@@ -1,6 +1,8 @@
+import { useState } from "react";
 import styles from "./styles.module.scss";
 
 export function Menu() {
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
   const menuItems = [
     {
       name: '手相術',
@@ -60,6 +62,13 @@ export function Menu() {
             お悩みや知りたい内容に合わせて、最適な占術をご提案いたします。
             <br className={styles.menuBreakMdOnly} />
             組み合わせての鑑定も可能です。
+            <button
+              type="button"
+              className={styles.menuGuideLinkInline}
+              onClick={() => setIsGuideOpen(true)}
+            >
+              迷ったら？占術の選び方
+            </button>
           </p>
         </div>
 
@@ -94,56 +103,74 @@ export function Menu() {
           ))}
         </div>
 
-        {/* Guide Section */}
-        <div className={styles.menuGuide}>
-          <h3 className={styles.menuGuideTitle}>
-            迷ったら？占術の選び方
-          </h3>
-          <div className={styles.menuGuideGrid}>
-            <div className={styles.menuGuideItem}>
-              <div className={styles.menuGuideItemTitle}>
-                💕 恋愛・結婚について
-              </div>
-              <p className={styles.menuGuideItemText}>
-                → 手相術、人相術、インナーチャイルドカード
-              </p>
-            </div>
-            <div className={styles.menuGuideItem}>
-              <div className={styles.menuGuideItemTitle}>
-                💼 仕事・キャリアについて
-              </div>
-              <p className={styles.menuGuideItemText}>
-                → 人相術、九星気学
-              </p>
-            </div>
-            <div className={styles.menuGuideItem}>
-              <div className={styles.menuGuideItemTitle}>
-                🏠 引越し・旅行・方位
-              </div>
-              <p className={styles.menuGuideItemText}>
-                → 九星気学
-              </p>
-            </div>
-            <div className={styles.menuGuideItem}>
-              <div className={styles.menuGuideItemTitle}>
-                🌱 心のケア・癒し
-              </div>
-              <p className={styles.menuGuideItemText}>
-                → インナーチャイルドカード、フラワーエッセンス
-              </p>
-            </div>
-          </div>
-          <div className={styles.menuGuideCtaWrap}>
-            <a
-              href="#pricing"
-              onClick={(e) => scrollToSection(e, '#pricing')}
-              className={styles.menuGuideCta}
-            >
-              料金プランを見る
-            </a>
-          </div>
+        <div className={styles.menuGuideCtaWrap}>
+          <a
+            href="#pricing"
+            onClick={(e) => scrollToSection(e, "#pricing")}
+            className={styles.menuGuideCta}
+          >
+            料金プランを見る
+          </a>
         </div>
       </div>
+
+      {isGuideOpen && (
+        <div
+          className={styles.menuGuideModalBackdrop}
+          onClick={() => setIsGuideOpen(false)}
+        >
+          <div
+            className={styles.menuGuideModal}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className={styles.menuGuideModalHeader}>
+              <h4 className={styles.menuGuideModalTitle}>迷ったら？占術の選び方</h4>
+              <button
+                type="button"
+                className={styles.menuGuideModalClose}
+                onClick={() => setIsGuideOpen(false)}
+                aria-label="閉じる"
+              >
+                ×
+              </button>
+            </div>
+            <div className={styles.menuGuideGrid}>
+              <div className={styles.menuGuideItem}>
+                <div className={styles.menuGuideItemTitle}>
+                  💕 恋愛・結婚について
+                </div>
+                <p className={styles.menuGuideItemText}>
+                  → 手相術、人相術、インナーチャイルドカード
+                </p>
+              </div>
+              <div className={styles.menuGuideItem}>
+                <div className={styles.menuGuideItemTitle}>
+                  💼 仕事・キャリアについて
+                </div>
+                <p className={styles.menuGuideItemText}>
+                  → 人相術、九星気学
+                </p>
+              </div>
+              <div className={styles.menuGuideItem}>
+                <div className={styles.menuGuideItemTitle}>
+                  🏠 引越し・旅行・方位
+                </div>
+                <p className={styles.menuGuideItemText}>
+                  → 九星気学
+                </p>
+              </div>
+              <div className={styles.menuGuideItem}>
+                <div className={styles.menuGuideItemTitle}>
+                  🌱 心のケア・癒し
+                </div>
+                <p className={styles.menuGuideItemText}>
+                  → インナーチャイルドカード、フラワーエッセンス
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

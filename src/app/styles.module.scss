@@ -1,11 +1,28 @@
 .page {
-  @apply min-h-screen bg-gradient-to-b from-stone-50 via-white to-stone-50;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fafaf9 0%, #ffffff 50%, #fafaf9 100%);
 }
 
 .floatingCta {
-  @apply md:hidden fixed bottom-6 right-6 z-[100] px-6 py-3 bg-indigo-900 text-white rounded-full shadow-lg transition-colors;
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 100;
+  padding: 0.75rem 1.5rem;
+  background: #312e81;
+  color: #ffffff;
+  border-radius: 9999px;
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2),
+    0 4px 6px -4px rgba(15, 23, 42, 0.15);
+  transition: background-color 150ms ease;
+}
+
+@media (min-width: 768px) {
+  .floatingCta {
+    display: none;
+  }
 }
 
 .floatingCta:hover {
-  @apply bg-indigo-800;
+  background: #3730a3;
 }
