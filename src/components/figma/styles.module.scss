@@ -1,0 +1,7 @@
+.imageFallback {
+  @apply inline-block bg-gray-100 text-center align-middle;
+}
+
+.imageFallbackInner {
+  @apply flex items-center justify-center w-full h-full;
+}
