@@ -145,7 +145,7 @@ export function Menu() {
                   💕 恋愛・結婚について
                 </div>
                 <p className={styles.menuGuideItemText}>
-                  → 手相術、人相術、インナーチャイルドカード
+                  → 手相術、人相術、インナーチャイルドカード、推命学
                 </p>
               </div>
               <div className={styles.menuGuideItem}>
@@ -153,7 +153,7 @@ export function Menu() {
                   💼 仕事・キャリアについて
                 </div>
                 <p className={styles.menuGuideItemText}>
-                  → 人相術、九星気学
+                  → 人相術、九星気学、推命学
                 </p>
               </div>
               <div className={styles.menuGuideItem}>
