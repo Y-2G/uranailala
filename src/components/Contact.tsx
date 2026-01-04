@@ -5,15 +5,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import styles from "./styles.module.scss";
 
-type ContactFormValues = {
-  name: string;
-  email: string;
-  phone: string;
-  plan: string;
-  message: string;
-  replyMethod: 'email' | 'phone' | 'either';
-};
-
 const contactSchema = yup.object({
   name: yup.string().trim().required('お名前を入力してください。'),
   email: yup
@@ -24,18 +15,21 @@ const contactSchema = yup.object({
   phone: yup
     .string()
     .trim()
+    .defined()
     .when('replyMethod', {
-      is: (value: ContactFormValues['replyMethod']) => value === 'phone',
+      is: (value: 'email' | 'phone' | 'either') => value === 'phone',
       then: (schema) => schema.required('電話番号を入力してください。'),
       otherwise: (schema) => schema.notRequired(),
     }),
-  plan: yup.string().trim().optional(),
+  plan: yup.string().trim().defined(),
   message: yup.string().trim().required('お問い合わせ内容を入力してください。'),
   replyMethod: yup
-    .mixed<ContactFormValues['replyMethod']>()
+    .mixed<'email' | 'phone' | 'either'>()
     .oneOf(['email', 'phone', 'either'])
     .required(),
 });
+
+type ContactFormValues = yup.InferType<typeof contactSchema>;
 
 export function Contact() {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -136,7 +130,6 @@ export function Contact() {
                   <input
                     type="text"
                     id="name"
-                    name="name"
                     required
                     className={styles.contactInput}
                     placeholder="山田 太郎"
@@ -157,7 +150,6 @@ export function Contact() {
                   <input
                     type="email"
                     id="email"
-                    name="email"
                     required
                     className={styles.contactInput}
                     placeholder="example@email.com"
@@ -182,7 +174,6 @@ export function Contact() {
                   <input
                     type="tel"
                     id="phone"
-                    name="phone"
                     required={replyMethod === 'phone'}
                     className={styles.contactInput}
                     placeholder="090-1234-5678"
@@ -202,7 +193,6 @@ export function Contact() {
                   </label>
                   <select
                     id="plan"
-                    name="plan"
                     className={`${styles.contactInput} ${styles.contactSelect}`}
                     {...register('plan')}
                   >
@@ -220,7 +210,6 @@ export function Contact() {
                   </label>
                   <select
                     id="replyMethod"
-                    name="replyMethod"
                     className={`${styles.contactInput} ${styles.contactSelect}`}
                     {...register('replyMethod')}
                   >
@@ -238,7 +227,6 @@ export function Contact() {
                   </label>
                   <textarea
                     id="message"
-                    name="message"
                     required
                     rows={6}
                     className={`${styles.contactInput} ${styles.contactTextarea}`}
