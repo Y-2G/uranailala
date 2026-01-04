@@ -39,6 +39,13 @@ export function Menu() {
       duration: '40分〜',
       tags: ['ストレス', '感情調整', 'ヒーリング'],
     },
+    {
+      name: '推命術',
+      icon: '🧭',
+      description: '陰陽五行のバランスから、その人の人生のシナリオを推察する占いです',
+      duration: '40分〜',
+      tags: ['運勢', '人生の流れ', '自己理解'],
+    },
   ];
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
