@@ -1,46 +1,43 @@
-import { Instagram, Calendar, ExternalLink } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { Instagram, Calendar, ExternalLink } from "lucide-react";
 import styles from "./styles.module.scss";
 
+type InstagramPost = {
+  id: string;
+  image: string;
+  caption: string;
+  timestamp: string;
+  permalink: string;
+};
+
 export function Updates() {
-  // Mock Instagram posts
-  const instagramPosts = [
-    {
-      id: 1,
-      image: 'https://images.unsplash.com/photo-1760164142066-1ac379c057f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0YXJvdCUyMGNhcmRzJTIwZ2VudGxlfGVufDF8fHx8MTc2NzUwODE2MXww&ixlib=rb-4.1.0&q=80&w=1080',
-      caption: '1月の鑑定スケジュールをアップしました✨',
-      date: '2026-01-03',
-    },
-    {
-      id: 2,
-      image: 'https://images.unsplash.com/photo-1737127999122-4204ee4ed86d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZWFjZWZ1bCUyMG5hdHVyZSUyMHNvZnR8ZW58MXx8fHwxNzY3NTA4MTYyfDA&ixlib=rb-4.1.0&q=80&w=1080',
-      caption: '新年のご挨拶と2026年の運勢について',
-      date: '2026-01-01',
-    },
-    {
-      id: 3,
-      image: 'https://images.unsplash.com/photo-1761634731476-abb2df18357d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGlyaXR1YWwlMjBoZWFsaW5nJTIwaGFuZHMlMjBsaWdodHxlbnwxfHx8fDE3Njc1MDgxNjF8MA&ixlib=rb-4.1.0&q=80&w=1080',
-      caption: '冬至のフラワーエッセンス特集🌸',
-      date: '2025-12-21',
-    },
-    {
-      id: 4,
-      image: 'https://images.unsplash.com/photo-1760164142066-1ac379c057f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0YXJvdCUyMGNhcmRzJTIwZ2VudGxlfGVufDF8fHx8MTc2NzUwODE2MXww&ixlib=rb-4.1.0&q=80&w=1080',
-      caption: '九星気学で見る12月の吉方位',
-      date: '2025-12-15',
-    },
-    {
-      id: 5,
-      image: 'https://images.unsplash.com/photo-1737127999122-4204ee4ed86d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZWFjZWZ1bCUyMG5hdHVyZSUyMHNvZnR8ZW58MXx8fHwxNzY3NTA4MTYyfDA&ixlib=rb-4.1.0&q=80&w=1080',
-      caption: 'インナーチャイルドカードのご紹介',
-      date: '2025-12-10',
-    },
-    {
-      id: 6,
-      image: 'https://images.unsplash.com/photo-1761634731476-abb2df18357d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGlyaXR1YWwlMjBoZWFsaW5nJTIwaGFuZHMlMjBsaWdodHxlbnwxfHx8fDE3Njc1MDgxNjF8MA&ixlib=rb-4.1.0&q=80&w=1080',
-      caption: '年末年始の営業日程のお知らせ',
-      date: '2025-12-05',
-    },
-  ];
+  const [instagramPosts, setInstagramPosts] = useState<InstagramPost[]>([]);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch("/api/instagram");
+        if (!response.ok) {
+          return;
+        }
+        const data = await response.json();
+        if (!isActive) {
+          return;
+        }
+        setInstagramPosts(data.posts ?? []);
+      } catch (error) {
+        // Fail silently; the section will simply show no posts.
+      }
+    };
+
+    fetchPosts();
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -88,20 +85,22 @@ export function Updates() {
           {instagramPosts.map((post) => (
             <a
               key={post.id}
-              href="https://www.instagram.com/rar9302/"
+              href={post.permalink}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.updatesCardDesktop}
             >
               <img
                 src={post.image}
-                alt={post.caption}
+                alt={post.caption || "Instagramの投稿"}
                 className={styles.updatesCardImage}
               />
               <div className={styles.updatesCardOverlay}>
                 <div className={styles.updatesCardMeta}>
                   <p className={styles.updatesCaption}>{post.caption}</p>
-                  <p className={styles.updatesDate}>{post.date}</p>
+                  <p className={styles.updatesDate}>
+                    {post.timestamp ? formatDate(post.timestamp) : ""}
+                  </p>
                 </div>
                 <div className={styles.updatesCardExternal}>
                   <ExternalLink className={styles.updatesExternalIcon} size={20} />
@@ -116,20 +115,22 @@ export function Updates() {
           {instagramPosts.slice(0, 4).map((post) => (
             <a
               key={post.id}
-              href="https://www.instagram.com/rar9302/"
+              href={post.permalink}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.updatesCardTablet}
             >
               <img
                 src={post.image}
-                alt={post.caption}
+                alt={post.caption || "Instagramの投稿"}
                 className={styles.updatesCardImage}
               />
               <div className={styles.updatesCardOverlay}>
                 <div className={styles.updatesCardMeta}>
                   <p className={styles.updatesCaption}>{post.caption}</p>
-                  <p className={styles.updatesDate}>{post.date}</p>
+                  <p className={styles.updatesDate}>
+                    {post.timestamp ? formatDate(post.timestamp) : ""}
+                  </p>
                 </div>
                 <div className={styles.updatesCardExternal}>
                   <ExternalLink className={styles.updatesExternalIcon} size={18} />
@@ -145,19 +146,21 @@ export function Updates() {
             {instagramPosts.map((post) => (
               <a
                 key={post.id}
-                href="https://www.instagram.com/rar9302/"
+                href={post.permalink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.updatesMobileCard}
               >
                 <img
                   src={post.image}
-                  alt={post.caption}
+                  alt={post.caption || "Instagramの投稿"}
                   className={styles.updatesMobileImage}
                 />
                 <div className={styles.updatesMobileOverlay}>
                   <p className={styles.updatesMobileCaption}>{post.caption}</p>
-                  <p className={styles.updatesMobileDate}>{post.date}</p>
+                  <p className={styles.updatesMobileDate}>
+                    {post.timestamp ? formatDate(post.timestamp) : ""}
+                  </p>
                 </div>
               </a>
             ))}
@@ -179,4 +182,16 @@ export function Updates() {
       </div>
     </section>
   );
+}
+
+function formatDate(timestamp: string) {
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+  return date.toLocaleDateString("ja-JP", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
 }
