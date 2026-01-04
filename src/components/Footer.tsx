@@ -47,7 +47,7 @@ export function Footer() {
             <h3 className={styles.footerSectionTitle}>フォロー</h3>
             <div className={styles.footerSocialList}>
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/rar9302/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`${styles.footerSocialLink} ${styles.footerSocialInstagram}`}

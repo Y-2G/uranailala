@@ -64,7 +64,7 @@ export function Updates() {
           {/* Instagram CTA */}
           <div className={styles.updatesCtaGroup}>
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/rar9302/"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.updatesCtaInstagram}
@@ -88,7 +88,7 @@ export function Updates() {
           {instagramPosts.map((post) => (
             <a
               key={post.id}
-              href="https://instagram.com"
+              href="https://www.instagram.com/rar9302/"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.updatesCardDesktop}
@@ -116,7 +116,7 @@ export function Updates() {
           {instagramPosts.slice(0, 4).map((post) => (
             <a
               key={post.id}
-              href="https://instagram.com"
+              href="https://www.instagram.com/rar9302/"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.updatesCardTablet}
@@ -145,7 +145,7 @@ export function Updates() {
             {instagramPosts.map((post) => (
               <a
                 key={post.id}
-                href="https://instagram.com"
+                href="https://www.instagram.com/rar9302/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.updatesMobileCard}
@@ -167,7 +167,7 @@ export function Updates() {
         {/* View More on Instagram */}
         <div className={styles.updatesViewMore}>
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/rar9302/"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.updatesViewMoreLink}
