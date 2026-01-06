@@ -369,121 +369,76 @@ function createFrontContent(THREE: any) {
   return group;
 }
 
-// Create sun with rays (back side)
+// Create sun with rays (back side) - matching business card design
 function createBackContent(THREE: any) {
   const group = new THREE.Group();
 
-  // Sun core
-  const sunGeometry = new THREE.SphereGeometry(0.16, 32, 32);
-  const sunMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffaa33,
-    emissive: 0xffaa33,
-    emissiveIntensity: 0.5,
+  // Star glint shape in center (4-pointed star)
+  const glintColor = 0xd4a855; // Same color as rays
+  const glintShape = new THREE.Shape();
+  const glintSize = 0.16;
+  const glintWidth = 0.04;
+  
+  // Create 4-pointed star glint shape
+  glintShape.moveTo(0, glintSize); // Top point
+  glintShape.lineTo(glintWidth, glintWidth);
+  glintShape.lineTo(glintSize, 0); // Right point
+  glintShape.lineTo(glintWidth, -glintWidth);
+  glintShape.lineTo(0, -glintSize); // Bottom point
+  glintShape.lineTo(-glintWidth, -glintWidth);
+  glintShape.lineTo(-glintSize, 0); // Left point
+  glintShape.lineTo(-glintWidth, glintWidth);
+  glintShape.lineTo(0, glintSize);
+  
+  const glintGeometry = new THREE.ShapeGeometry(glintShape);
+  const glintMaterial = new THREE.MeshBasicMaterial({
+    color: glintColor,
+    side: THREE.DoubleSide,
   });
-  const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-  sun.position.set(0, 0.22, 0);
-  group.add(sun);
-
-  // Inner bright core
-  const innerGeometry = new THREE.SphereGeometry(0.08, 16, 16);
-  const innerMaterial = new THREE.MeshBasicMaterial({
-    color: 0xffeeaa,
-  });
-  const inner = new THREE.Mesh(innerGeometry, innerMaterial);
-  inner.position.set(0, 0.22, 0);
-  group.add(inner);
+  const glint = new THREE.Mesh(glintGeometry, glintMaterial);
+  glint.position.set(0, 0, 0.001);
+  group.add(glint);
 
   // Sun rays group (for rotation)
   const raysGroup = new THREE.Group();
   raysGroup.name = "raysGroup";
-  raysGroup.position.set(0, 0.22, 0);
 
-  const rayGeometry = new THREE.ConeGeometry(0.022, 0.11, 8);
-  const rayMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffcc55,
-    emissive: 0xffcc55,
-    emissiveIntensity: 0.35,
+  // Create 8 thick triangular rays matching the business card design
+  const rayCount = 8;
+  const rayMaterial = new THREE.MeshBasicMaterial({
+    color: 0xd4a855, // Golden/tan color matching card sun
+    side: THREE.DoubleSide,
   });
 
-  for (let i = 0; i < 12; i++) {
-    const ray = new THREE.Mesh(rayGeometry, rayMaterial.clone());
-    const angle = (i / 12) * Math.PI * 2;
-    const distance = 0.28;
+  for (let i = 0; i < rayCount; i++) {
+    const angle = (i / rayCount) * Math.PI * 2 - Math.PI / 2; // Start from top
+    
+    // Create triangle shape for ray
+    const rayShape = new THREE.Shape();
+    const baseWidth = 0.08; // Width at the base
+    const rayLength = 0.2; // Length of ray
+    const innerRadius = 0.17; // Distance from center to ray base
+    
+    // Triangle pointing outward
+    rayShape.moveTo(-baseWidth / 2, 0);
+    rayShape.lineTo(baseWidth / 2, 0);
+    rayShape.lineTo(0, rayLength);
+    rayShape.lineTo(-baseWidth / 2, 0);
+    
+    const rayGeometry = new THREE.ShapeGeometry(rayShape);
+    const ray = new THREE.Mesh(rayGeometry, rayMaterial);
+    
+    // Position and rotate each ray
     ray.position.set(
-      Math.cos(angle) * distance,
-      0,
-      Math.sin(angle) * distance
+      Math.cos(angle) * innerRadius,
+      Math.sin(angle) * innerRadius,
+      0
     );
-    ray.rotation.z = -angle - Math.PI / 2;
-    ray.rotation.x = Math.PI / 2;
-    raysGroup.add(ray);
-  }
-
-  // Secondary rays (smaller)
-  for (let i = 0; i < 12; i++) {
-    const ray = new THREE.Mesh(
-      new THREE.ConeGeometry(0.015, 0.07, 6),
-      rayMaterial.clone()
-    );
-    const angle = (i / 12) * Math.PI * 2 + Math.PI / 12;
-    const distance = 0.32;
-    ray.position.set(
-      Math.cos(angle) * distance,
-      0,
-      Math.sin(angle) * distance
-    );
-    ray.rotation.z = -angle - Math.PI / 2;
-    ray.rotation.x = Math.PI / 2;
+    ray.rotation.z = angle - Math.PI / 2;
     raysGroup.add(ray);
   }
 
   group.add(raysGroup);
-
-  // Floating stars
-  const starGeometry = new THREE.TetrahedronGeometry(0.028, 0);
-  const starMaterial = new THREE.MeshStandardMaterial({
-    color: 0x886644,
-    metalness: 0.5,
-    roughness: 0.3,
-  });
-
-  for (let i = 0; i < 7; i++) {
-    const star = new THREE.Mesh(starGeometry, starMaterial.clone());
-    star.position.set(
-      (Math.random() - 0.5) * 0.55,
-      0.05 + Math.random() * 0.38,
-      (Math.random() - 0.5) * 0.25
-    );
-    star.rotation.set(
-      Math.random() * Math.PI,
-      Math.random() * Math.PI,
-      Math.random() * Math.PI
-    );
-    star.scale.setScalar(0.8 + Math.random() * 0.4);
-    group.add(star);
-  }
-
-  // Small glowing particles
-  const particleMaterial = new THREE.MeshBasicMaterial({
-    color: 0xffeecc,
-    transparent: true,
-    opacity: 0.7,
-  });
-
-  for (let i = 0; i < 15; i++) {
-    const particle = new THREE.Mesh(
-      new THREE.SphereGeometry(0.006, 6, 6),
-      particleMaterial
-    );
-    const angle = Math.random() * Math.PI * 2;
-    const r = 0.2 + Math.random() * 0.25;
-    particle.position.set(
-      Math.cos(angle) * r,
-      0.22 + (Math.random() - 0.5) * 0.3,
-      Math.sin(angle) * r
-    );
-    group.add(particle);
-  }
 
   return group;
 }
