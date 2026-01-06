@@ -1264,8 +1264,6 @@
   overflow-x: auto;
   padding-bottom: 1rem;
   margin: 0 -1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
 }
 
 @media (min-width: 768px) {
@@ -1277,6 +1275,8 @@
 .updatesMobileTrack {
   display: flex;
   gap: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .updatesMobileCard {
