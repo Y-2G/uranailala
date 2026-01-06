@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Menu } from "@/components/Menu";
@@ -10,6 +11,21 @@ import { Footer } from "@/components/Footer";
 import styles from "./styles.module.scss";
 
 export default function Home() {
+  const [showFloatingCta, setShowFloatingCta] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show CTA after scrolling past hero section (approximately window height)
+      const heroHeight = window.innerHeight;
+      setShowFloatingCta(window.scrollY > heroHeight * 0.8);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Check initial position
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const scrollToContact = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const element = document.querySelector('#contact');
@@ -31,11 +47,11 @@ export default function Home() {
       </main>
       <Footer />
 
-      {/* Mobile Floating CTA - Always fixed at bottom right */}
+      {/* Mobile Floating CTA - Shows after hero section */}
       <a
         href="#contact"
         onClick={scrollToContact}
-        className={styles.floatingCta}
+        className={`${styles.floatingCta} ${showFloatingCta ? styles.visible : ""}`}
       >
         鑑定を依頼する
       </a>
