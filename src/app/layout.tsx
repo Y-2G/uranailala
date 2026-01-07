@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "../index.css";
 
 export const metadata: Metadata = {
-  title: "Uranailala",
+  title: "ヒント出しヒーラーらら",
   description: "Spiritual healing website",
 };
 
