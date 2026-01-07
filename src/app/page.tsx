@@ -15,9 +15,18 @@ export default function Home() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show CTA after scrolling past hero section (approximately window height)
+      // Show CTA after scrolling past hero section, hide at contact section
       const heroHeight = window.innerHeight;
-      setShowFloatingCta(window.scrollY > heroHeight * 0.8);
+      const contactSection = document.querySelector('#contact');
+      const pastHero = window.scrollY > heroHeight * 0.8;
+      
+      let beforeContact = true;
+      if (contactSection) {
+        const contactTop = contactSection.getBoundingClientRect().top + window.scrollY;
+        beforeContact = window.scrollY < contactTop - window.innerHeight * 0.5;
+      }
+      
+      setShowFloatingCta(pastHero && beforeContact);
     };
 
     window.addEventListener("scroll", handleScroll);
